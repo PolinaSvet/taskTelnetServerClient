@@ -1,0 +1,92 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>TelnetClient</title>
+   <style>
+body {
+            font-family: Arial, sans-serif;
+            background-color: #B7CEEC; /* darkslategray */
+            color: #d3d3d3; /* lightsteelgray */
+            margin: 0;
+            padding: 0;
+        }
+        #chatContainer {
+            display: flex;
+            flex-direction: column;
+            height: 97vh;
+        }
+        #messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            border-bottom: 1px solid #4f4f4f; /* darkslategray */
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 50%;
+            clear: both;
+        }
+        .message.sent {
+            background-color: #4682b4; /* steelblue */
+            color: white;
+            float: right;
+        }
+        .message.received {
+            background-color: #6a5acd; /* slateblue */
+            color: white;
+            float: left;
+        }
+        #inputContainer {
+            display: flex;
+            border-top: 1px solid #708090; /* darkslategray */
+            padding: 10px;
+            background-color: #3A3B3C; /* darkslategray */
+        }
+        #messageInput, #sendPresetButton, #sendButton {
+            margin-right: 10px;
+        }
+        #messageInput {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #4f4f4f; /* darkslategray */
+            border-radius: 5px;
+            background-color: #4f4f4f; /* darkslategray */
+            color: white;
+        }
+        #sendPresetButton, #sendButton {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4682b4; /* steelblue */
+            color: white;
+            cursor: pointer;
+        }
+        #sendPresetButton:hover, #sendButton:hover {
+            background-color: #315f6d; /* slightly darker steelblue */
+        }
+        #messageSelect {
+            padding: 10px;
+            border: 1px solid #4f4f4f; /* darkslategray */
+            border-radius: 5px;
+            background-color: #4f4f4f; /* darkslategray */
+            color: white;
+        }
+  </style>
+</head>
+<body>
+    <header>
+        <h1></h1>
+    </header>
+    <main>
+        {{block "content" .}} {{end}}
+    </main>
+    <footer>
+    </footer>
+</body>
+</html>
+{{end}}

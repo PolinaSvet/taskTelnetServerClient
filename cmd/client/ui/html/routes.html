@@ -1,0 +1,105 @@
+{{define "content"}}
+
+<div id="chatContainer">
+	<div id="messages">
+		<!-- Example messages -->
+		<div class="message sent">Enter your name and click the send button</div>
+		<div class="message received"></div>
+	</div>
+	<div id="inputContainer">
+		<select id="messageSelect">
+			<option value="help">help: display help</option>
+			<option value="list">list: list of connected participants</option>
+			<option value="newsOn">newsOn: turns on broadcast news</option>
+			<option value="newsOff">newsOff: turns off broadcast news</option>
+			<option value="name&lt;-content">name&lt;-content: send a message to a specific member</option>
+			<option value="close">close: leave chat</option>
+		</select>
+		<button id="sendPresetButton" onclick="sendDataTo('POST','MENU')">Send Preset</button>
+		<input id="messageInput" type="text" placeholder="Type a message...">
+		<button id="sendButton" onclick="sendDataTo('POST','MSG')">Send</button>
+	</div>
+</div>
+
+
+<script>
+
+	const sendButton = document.getElementById('sendButton');
+	const sendPresetButton = document.getElementById('sendPresetButton');
+	const messagesContainer = document.getElementById('messages');
+	const messageInput = document.getElementById('messageInput');
+	const messageSelect = document.getElementById('messageSelect');
+
+	document.addEventListener("DOMContentLoaded", () => {
+            const ws = new WebSocket("ws://localhost:8080/ws");
+            ws.onmessage = (event) => {
+                const data = event.data;
+				const messageElement = document.createElement('div');
+				messageElement.className = 'message received';
+				messageElement.textContent = data;
+				messagesContainer.appendChild(messageElement);
+				messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to bottom
+				
+            };
+        });
+	
+	function addToJsonIfTrue(jsonObject,method, key, value, enablevalue) {
+		if (enablevalue) {
+			jsonObject[key] = value;
+		}
+	};
+
+	function sendDataTo(method, type) {
+
+		var formData = {};
+		var messageText = messageInput.value.trim();
+		if (type=='MSG'){
+			messageText = messageInput.value.trim();
+			addToJsonIfTrue(formData,method, 'express', messageInput.value, true);
+		}else{
+			messageText = messageSelect.value.trim();
+			addToJsonIfTrue(formData,method, 'express', messageSelect.value, true);
+		}
+
+
+		if (messageText) {
+			const messageElement = document.createElement('div');
+			messageElement.className = 'message sent';
+			messageElement.textContent = messageText;
+			messagesContainer.appendChild(messageElement);
+			messageInput.value = '';
+			messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to bottom
+		}
+		
+		fetch('/sendDataTo', 
+		{
+			method: method,
+			headers: {'Content-Type': 'application/json',},
+			body: JSON.stringify(formData),
+		})
+		.then(response => {
+			
+                response.json().then((data) => {
+				const outputText = document.getElementById("outResult");
+
+				var currentDate = new Date();
+				outputText.value += currentDate.toLocaleString() + ":\n";
+
+				Object.entries(data).forEach(([key, value]) => {
+                    outputText.value += value + '\n';
+                });
+            });
+            
+            
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+			alert('Error: ' + error.message);
+		});
+	};
+
+	
+</script>
+
+
+{{end}}
